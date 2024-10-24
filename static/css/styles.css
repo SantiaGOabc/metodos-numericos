@@ -1,0 +1,317 @@
+/* General body styles */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #e0f7fa; /* Fondo turquesa claro */
+    color: #4a4a4a; /* Texto gris oscuro */
+    margin: 0;
+    padding-top: 80px; /* Espacio para el header fijo */
+}
+
+/* Header styles */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #673ab7; /* Morado suave */
+    z-index: 1000; /* Para mantenerlo encima de todo */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .navbar-brand, .navbar .nav-link {
+    color: white !important;
+}
+
+.navbar .nav-link:hover {
+    text-decoration: underline;
+}
+
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Container for main content */
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border-radius: 12px;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: #673ab7; /* Morado suave para títulos */
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 1.1rem;
+    color: #00796b; /* Verde azulado para texto */
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Inputs and buttons */
+input[type="text"],
+input[type="number"],
+button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #673ab7; /* Borde morado suave */
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+    border-color: #26a69a !important; /* Turquesa en focus */
+}
+
+button {
+    background-color: #673ab7; /* Fondo morado */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #26a69a; /* Fondo turquesa en hover */
+}
+
+label {
+    font-size: 1rem;
+    color: #00796b; /* Verde azulado para etiquetas */
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item:hover {
+    background-color: #26a69a; /* Turquesa en hover */
+    color: white;
+}
+
+/* Footer styles */
+footer {
+    margin-top: 40px;
+    font-size: 0.9rem;
+    color: #78909c; /* Gris azulado suave */
+    text-align: center;
+}
+
+/* Eliminar apariencia predeterminada de los inputs */
+input[type="text"],
+input[type="number"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/*MODO OSCURO*/
+/* Modo oscuro */
+body.dark-mode {
+    background-color: #121212; /* Fondo oscuro */
+    color: #e0e0e0; /* Texto claro */
+}
+
+body.dark-mode .navbar {
+    background-color: #1f1f1f; /* Navbar oscuro */
+}
+
+body.dark-mode .container {
+    background-color: #1f1f1f; /* Contenedor oscuro */
+    color: #e0e0e0; /* Texto claro */
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1); /* Sombra clara */
+}
+
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode h3, 
+body.dark-mode h4, 
+body.dark-mode h5, 
+body.dark-mode h6 {
+    color: #bb86fc; /* Títulos morado claro */
+}
+
+body.dark-mode p,
+body.dark-mode label {
+    color: #80cbc4; /* Verde azulado claro */
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="number"],
+body.dark-mode button {
+    border-color: #bb86fc; /* Borde morado claro */
+    background-color: #333333; /* Fondo de los inputs oscuro */
+    color: #e0e0e0; /* Texto claro en los inputs */
+}
+
+body.dark-mode input[type="text"]:focus,
+body.dark-mode input[type="number"]:focus {
+    border-color: #80cbc4; /* Turquesa claro en focus */
+}
+
+body.dark-mode button {
+    background-color: #bb86fc; /* Fondo morado claro */
+    color: #121212;
+}
+
+body.dark-mode button:hover {
+    background-color: #80cbc4; /* Fondo turquesa claro en hover */
+}
+
+body.dark-mode .dropdown-menu {
+    background-color: #333;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .dropdown-item:hover {
+    background-color: #80cbc4; /* Turquesa claro en hover */
+    color: #121212;
+}
+
+body.dark-mode footer {
+    color: #a0a0a0; /* Gris claro para el footer */
+}
+
+/*Css del boton oscuro*/
+/* Botón de Modo Oscuro estilizado */
+#dark-mode-toggle {
+    background-color: #673ab7; /* Fondo morado */
+    color: white;
+    border: none;
+    padding: 5px 15px; /* Ajustar padding */
+    border-radius: 20px;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    width: auto; /* Asegurar que el ancho sea automático */
+    margin-left: auto; /* Mover el botón hacia la derecha */
+}
+
+#dark-mode-toggle i {
+    margin-right: 5px; /* Espacio entre el ícono y el texto */
+    transition: transform 0.3s ease;
+}
+
+#dark-mode-toggle:hover {
+    background-color: #26a69a; /* Fondo turquesa en hover */
+}
+
+#dark-mode-toggle.dark {
+    background-color: #26a69a; /* Fondo para modo oscuro */
+    color: #121212;
+}
+
+
+/* Alinear el contenido del navbar con flexbox */
+.navbar .container-fluid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-nav {
+    margin-right: auto;
+}
+/* Modo oscuro para los items del dropdown */
+body.dark-mode .dropdown-menu {
+    background-color: #333; /* Fondo oscuro */
+    color: #ffffff; /* Texto blanco */
+}
+
+body.dark-mode .dropdown-item {
+    color: #ffffff !important; /* Color del texto blanco */
+}
+
+body.dark-mode .dropdown-item:hover {
+    background-color: #26a69a; /* Fondo turquesa en hover */
+    color: #121212; /* Texto oscuro en hover para contraste */
+}
+
+/* Botón principal (Convertir) en modo oscuro */
+body.dark-mode button[type="submit"] {
+    background-color: #673ab7; /* Morado más oscuro */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+body.dark-mode button[type="submit"]:hover {
+    background-color: #26a69a; /* Turquesa en hover */
+    color: #121212;
+}
+
+/* Botón de limpiar en modo oscuro */
+body.dark-mode button[type="reset"] {
+    background-color: #4a4a4a; /* Gris oscuro */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+body.dark-mode button[type="reset"]:hover {
+    background-color: #26a69a; /* Turquesa en hover */
+    color: #121212;
+}
+/* Estilo del acordeón en modo oscuro */
+body.dark-mode .accordion-button {
+    background-color: #4a4a4a; /* Fondo gris oscuro */
+    color: #ffffff; /* Texto blanco */
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+body.dark-mode .accordion-button:hover {
+    background-color: #26a69a; /* Fondo turquesa en hover */
+    color: #121212; /* Texto oscuro en hover */
+}
+
+body.dark-mode .accordion-body {
+    background-color: #333333; /* Fondo más oscuro para el contenido */
+    color: #e0e0e0; /* Texto gris claro */
+    padding: 15px;
+    border-radius: 8px;
+}
+
+body.dark-mode .accordion-button:not(.collapsed) {
+    background-color: #673ab7; /* Fondo morado cuando está abierto */
+    color: white;
+}
+
+body.dark-mode .accordion-button::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M1.5 1.5L8 8l6.5-6.5'/%3E%3C/svg%3E");
+    transform: rotate(90deg); /* Flecha que rota cuando está abierto */
+}
+
+

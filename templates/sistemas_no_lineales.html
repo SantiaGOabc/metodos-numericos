@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- MathJax Script -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>Resolver Sistemas No Lineales</title>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="container">
+        <h1>Resolver Sistemas de Ecuaciones No Lineales</h1>
+        
+        <!-- Tooltip Button -->
+        <button type="button" class="btn btn-info" data-bs-toggle="tooltip" data-bs-placement="right" 
+                title="Usa '**' para exponentes. Ejemplo: x**2 para x al cuadrado. Usa 'sqrt()' para raíces. Ejemplo: sqrt(x) para raíz de x. No se acepta el simbolo '=' por favor despeje su formula">
+            <i class="fas fa-info-circle"></i> Información
+        </button>
+
+        <form method="POST" class="mt-4">
+            <label for="ecuacion1">Ecuación 1:</label>
+            <input type="text" id="ecuacion1" name="ecuaciones" placeholder="x**2 + y**2 - 25" required><br><br>
+
+            <label for="ecuacion2">Ecuación 2:</label>
+            <input type="text" id="ecuacion2" name="ecuaciones" placeholder="x + y - 7" required><br><br>
+
+            <label for="variables">Variables (separadas por comas, ej: x, y):</label>
+            <input type="text" id="variables" name="variables" placeholder="x, y" required><br><br>
+
+            <button type="submit">Resolver</button>
+        </form>
+
+        {% if solucion %}
+            <h3>Solución:</h3>
+            <div>
+                $$ {{ solucion }} $$
+            </div>
+        {% elif error %}
+            <p>Error: {{ error }}</p>
+        {% endif %}
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
+<script src="{{ url_for('static', filename='js/dark-mode.js') }}"></script>
+</body>
+</html>

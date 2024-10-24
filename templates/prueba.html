@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolver Sistemas No Lineales</title>
+</head>
+<body>
+    <h1>Resolver Sistemas de Ecuaciones No Lineales</h1>
+    <form method="POST">
+        <label for="ecuacion1">Ecuación 1:</label>
+        <input type="text" id="ecuacion1" name="ecuaciones" placeholder="x**2 + y**2 - 25" required><br><br>
+
+        <label for="ecuacion2">Ecuación 2:</label>
+        <input type="text" id="ecuacion2" name="ecuaciones" placeholder="x + y - 7" required><br><br>
+
+        <label for="variables">Variables (separadas por comas, ej: x, y):</label>
+        <input type="text" id="variables" name="variables" placeholder="x, y" required><br><br>
+
+        <button type="submit">Resolver</button>
+    </form>
+
+    {% if solucion %}
+        <h3>Solución:</h3>
+        <pre>{{ solucion }}</pre>
+    {% elif error %}
+        <p>Error: {{ error }}</p>
+    {% endif %}
+</body>
+</html>
