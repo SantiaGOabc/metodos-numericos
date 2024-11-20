@@ -1,8 +1,5 @@
 from jacobi import es_diagonalmente_dominante, reorganizar_filas
 def gauss_seidel(A, b, tol, max_iter, criterio, decimales=6):
-    """
-    Método de Gauss-Seidel con cálculo de margen de error y redondeo de resultados a una cantidad específica de decimales.
-    """
     # Verificar si la matriz es diagonalmente dominante
     if not es_diagonalmente_dominante(A):
         # Intentar reorganizar las filas
@@ -15,14 +12,14 @@ def gauss_seidel(A, b, tol, max_iter, criterio, decimales=6):
     iteraciones = []
 
     for k in range(max_iter):
-        x_old = x[:]  # Guardamos los valores anteriores
-        errores = []  # Almacenamos los errores de cada variable en la iteración actual
+        x_old = x[:]  
+        errores = [] 
         
         for i in range(n):
-            sum1 = sum(A[i][j] * x[j] for j in range(n) if j != i)  # Usamos los valores actualizados de x
+            sum1 = sum(A[i][j] * x[j] for j in range(n) if j != i) 
             x[i] = (b[i] - sum1) / A[i][i]
 
-            # Calcular el error usando la fórmula 1 - (x_anterior / x_actual)
+            # Calcular el error
             if x[i] != 0:
                 error = 1 - (x_old[i] / x[i])
             else:
@@ -40,7 +37,7 @@ def gauss_seidel(A, b, tol, max_iter, criterio, decimales=6):
 
         # Detener según el criterio elegido
         if criterio == "tolerancia" and residuo < tol:
-            return x, iteraciones, k + 1  # Devuelve el resultado, las iteraciones y la iteración en la que se alcanzó el resultado
+            return x, iteraciones, k + 1  # Devuelve resultado
         elif criterio == "iteraciones" and k + 1 == max_iter:
             break
 

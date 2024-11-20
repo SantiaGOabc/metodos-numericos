@@ -3,8 +3,11 @@ from gauss_seidel import gauss_seidel
 from newton import newton_raphson
 from no_lineal import resolver_sistemas_no_lineales
 from jacobi import jacobi, extraer_coeficientes, es_diagonalmente_dominante, reorganizar_filas
-
+from sor_jacobi import sor
+from sor_gauss_seidel import sor_gauss_seidel
 import re
+
+
 
 app = Flask(__name__)
 app.secret_key = 'ñ'  
@@ -17,6 +20,8 @@ def seleccionar_tamano_gauss_seidel():
         return render_template('gauss_seidel.html', matriz_generada=True, tamano_matriz=tamano_matriz)
     else:
         return render_template('gauss_seidel.html', matriz_generada=False)
+    
+
 
 @app.route('/resolver_gauss_seidel', methods=['POST'])
 def resolver_gauss_seidel():
@@ -45,7 +50,7 @@ def resolver_gauss_seidel():
         tol = None
         max_iter = int(request.form['max_iter'])
 
-    # Extraer cantidad de decimales a mostrar (por defecto 6)
+    # los decimales que s etoma en cuenta
     decimales = int(request.form.get('decimales', 5))
 
     # Resolver Gauss-Seidel
@@ -104,8 +109,7 @@ def resolver_jacobi():
             # Mostrar mensaje de error si no se puede resolver por Jacobi
             error_message = "La matriz no es diagonalmente dominante y no se puede reorganizar para cumplir con esta condición."
             return render_template('jacobi.html', matriz_generada=True, tamano_matriz=tamano_matriz, error=error_message)
-
-    # Resolver Jacobi
+        
     resultado, iteraciones, iteracion_final = jacobi(A, b, tol, max_iter, criterio, decimales)
 
     if resultado is None:
@@ -117,6 +121,104 @@ def resolver_jacobi():
                                resultado=resultado, iteraciones=iteraciones, iteracion_final=iteracion_final)
 
 
+# Seleccionar tamaño para SOR
+@app.route('/seleccionar_tamano_sor_jacobi', methods=['GET', 'POST'])
+def seleccionar_tamano_sor_jacobi():
+    if request.method == 'POST':
+        tamano_matriz = int(request.form['tamano_matriz'])
+        return render_template('sor_jacobi.html', matriz_generada=True, tamano_matriz=tamano_matriz)
+    else:
+        return render_template('sor_jacobi.html', matriz_generada=False)
+
+
+# Resolver SOR
+@app.route('/resolver_sor_jacobi', methods=['POST'])
+def resolver_sor_jacobi():
+    tamano_matriz = int(request.form['tamano_matriz'])
+    A = []
+    b = []
+    
+    # Extraer valores de la matriz A
+    for i in range(tamano_matriz):
+        fila = []
+        for j in range(tamano_matriz):
+            fila.append(float(request.form[f'A_{i}_{j}']))
+        A.append(fila)
+    
+    # Extraer valores del vector b
+    for i in range(tamano_matriz):
+        b.append(float(request.form[f'b_{i}']))
+
+    # Extraer criterio de detención y parámetros
+    criterio = request.form['criterio']
+    tol = float(request.form.get('tolerancia', 0.0001)) if criterio == "tolerancia" else None
+    max_iter = int(request.form.get('max_iter', 100))
+    decimales = int(request.form.get('decimales', 6))
+    w = float(request.form.get('w', 1.0))  # Factor de relajación
+
+    iteraciones, iteracion_final = sor(A, b, w, tol, max_iter, criterio, decimales)
+
+    if not iteraciones:
+        return render_template('sor_jacobi.html', matriz_generada=True, tamano_matriz=tamano_matriz, error="No se pudo calcular el resultado.")
+    else:
+        return render_template('sor_jacobi.html', matriz_generada=True, tamano_matriz=tamano_matriz, 
+                               iteraciones=iteraciones, iteracion_final=iteracion_final)
+
+# Ruta para seleccionar el tamaño de la matriz
+@app.route('/seleccionar_tamano_sor_gauss_seidel', methods=['GET', 'POST'])
+def seleccionar_tamano_sor_gauss_seidel():
+    if request.method == 'POST':
+        try:
+            tamano_matriz = int(request.form['tamano_matriz'])
+        except ValueError:
+            return render_template('sor_gauss_seidel.html', matriz_generada=False, error="Debes ingresar un tamaño válido.")
+        return render_template('sor_gauss_seidel.html', matriz_generada=True, tamano_matriz=tamano_matriz)
+    else:
+        return render_template('sor_gauss_seidel.html', matriz_generada=False)
+
+# Ruta para resolver el método SOR basado en Gauss-Seidel
+@app.route('/resolver_sor_gauss_seidel', methods=['POST'])
+def resolver_sor_gauss_seidel():
+    try:
+        tamano_matriz = int(request.form['tamano_matriz'])
+        A = []
+        b = []
+
+        # Extraer valores de la matriz A
+        for i in range(tamano_matriz):
+            fila = []
+            for j in range(tamano_matriz):
+                fila.append(float(request.form[f'A_{i}_{j}']))
+            A.append(fila)
+
+        # Extraer valores del vector b
+        for i in range(tamano_matriz):
+            b.append(float(request.form[f'b_{i}']))
+
+        # Extraer criterio de detención y parámetros
+        criterio = request.form.get('criterio', 'tolerancia')  # Por defecto "tolerancia"
+        tol = float(request.form.get('tolerancia', 0.0001)) if criterio == "tolerancia" else None
+        max_iter = request.form.get('max_iter', '100')
+        if max_iter.strip() == '':
+            max_iter = 100  # Asignar un valor predeterminado si está vacío
+        else:
+            max_iter = int(max_iter)
+        decimales = int(request.form.get('decimales', 6))
+        w = float(request.form.get('w', 1.0))  # Factor de relajación
+
+        # Resolver usando SOR basado en Gauss-Seidel
+        iteraciones, iteracion_final = sor_gauss_seidel(A, b, w, tol, max_iter, criterio, decimales)
+
+        # Mostrar los resultados en la plantilla
+        return render_template('sor_gauss_seidel.html', matriz_generada=True, tamano_matriz=tamano_matriz,
+                               iteraciones=iteraciones, iteracion_final=iteracion_final)
+    except ValueError as e:
+        # Manejar errores de conversión numérica o campos vacíos
+        return render_template('sor_gauss_seidel.html', matriz_generada=False, error=f"Error en los datos: {e}")
+    except Exception as e:
+        # Manejar cualquier otro error inesperado
+        return render_template('sor_gauss_seidel.html', matriz_generada=False, error=f"Error inesperado: {e}")
+    
 #CALCULOS bases
 def cambio_de_base(numero, base_origen, base_destino):
     try:
