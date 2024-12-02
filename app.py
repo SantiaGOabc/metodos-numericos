@@ -5,12 +5,65 @@ from no_lineal import resolver_sistemas_no_lineales
 from jacobi import jacobi, extraer_coeficientes, es_diagonalmente_dominante, reorganizar_filas
 from sor_jacobi import sor
 from sor_gauss_seidel import sor_gauss_seidel
+from biseccion import biseccion
 import re
 
 
 
 app = Flask(__name__)
-app.secret_key = 'ñ'  
+app.secret_key = 'ñ' 
+
+def procesar_funcion(funcion):
+    """
+    Corrige la entrada del usuario, permitiendo ^ como operador de potencia
+    y agregando '*' entre números y variables si es necesario.
+    """
+    # Reemplaza ^ por ** para manejar potencias
+    funcion = funcion.replace('^', '**')
+
+    # Agrega '*' entre un número y una variable (ejemplo: 4x -> 4*x)
+    funcion = re.sub(r'(\d)([a-zA-Z])', r'\1*\2', funcion)
+
+    # Agrega '*' entre una variable y un número (ejemplo: x2 -> x*2)
+    funcion = re.sub(r'([a-zA-Z])(\d)', r'\1*\2', funcion)
+
+    return funcion
+
+
+# Ruta para el método de bisección
+@app.route('/biseccion', methods=['GET', 'POST'])
+def biseccion_route():
+    if request.method == 'POST':
+        try:
+            # Captura y procesa los datos del formulario
+            funcion = request.form['funcion']
+            funcion = procesar_funcion(funcion)
+
+            a = float(request.form['a'])
+            b = float(request.form['b'])
+            criterio_detencion = request.form['criterio_detencion']
+            decimales = int(request.form.get('decimales', 6))
+
+            tolerancia = request.form.get('tolerancia', None)
+            max_iter = request.form.get('max_iter', None)
+
+            tolerancia = float(tolerancia) if tolerancia else None
+            max_iter = int(max_iter) if max_iter else None
+
+            # Ejecutar el método de bisección
+            iteraciones, resultado, error = biseccion(funcion, a, b, tolerancia or 1e-6, max_iter or 100, criterio_detencion, decimales)
+
+            return render_template('biseccion.html', iteraciones=iteraciones, resultado=resultado, error=error)
+
+        except ValueError as e:
+            return render_template('biseccion.html', error=str(e))
+        except Exception as e:
+            return render_template('biseccion.html', error="Error inesperado. Verifica los valores ingresados.")
+    
+    return render_template('biseccion.html')
+
+
+
 
 #GAUSS SEIDEL
 @app.route('/seleccionar_tamano_gauss_seidel', methods=['GET', 'POST'])
@@ -40,12 +93,11 @@ def resolver_gauss_seidel():
     for i in range(tamano_matriz):
         b.append(float(request.form[f'b_{i}']))
 
-    # Extraer criterio de detención
     criterio = request.form['criterio']
     
     if criterio == "tolerancia":
         tol = float(request.form['tolerancia'])
-        max_iter = 100  # Definir un número de iteraciones por defecto si no se especifica
+        max_iter = 100 
     else:
         tol = None
         max_iter = int(request.form['max_iter'])
@@ -57,10 +109,8 @@ def resolver_gauss_seidel():
     resultado, iteraciones, iteracion_final = gauss_seidel(A, b, tol, max_iter, criterio, decimales)
 
     if resultado is None:
-        # Mostrar mensaje de error si no se puede resolver por Gauss-Seidel
         return render_template('gauss_seidel.html', matriz_generada=True, tamano_matriz=tamano_matriz, error=iteraciones)
     else:
-        # Mostrar el resultado, la iteración final y los errores de cada iteración
         return render_template('gauss_seidel.html', matriz_generada=True, tamano_matriz=tamano_matriz, 
                                resultado=resultado, iteraciones=iteraciones, iteracion_final=iteracion_final)
 
@@ -89,24 +139,20 @@ def resolver_jacobi():
     for i in range(tamano_matriz):
         b.append(float(request.form[f'b_{i}']))
 
-    # Extraer criterio de detención
     criterio = request.form['criterio']
     
     if criterio == "tolerancia":
         tol = float(request.form['tolerancia'])
-        max_iter = 100  # Definir un número de iteraciones por defecto si no se especifica
+        max_iter = 100 
     else:
         tol = None
         max_iter = int(request.form['max_iter'])
 
-    # Extraer cantidad de decimales a mostrar (por defecto 6)
     decimales = int(request.form.get('decimales', 6))
 
-    # Verificar si la matriz es diagonalmente dominante
     if not es_diagonalmente_dominante(A):
         A, b = reorganizar_filas(A, b)
         if A is None:
-            # Mostrar mensaje de error si no se puede resolver por Jacobi
             error_message = "La matriz no es diagonalmente dominante y no se puede reorganizar para cumplir con esta condición."
             return render_template('jacobi.html', matriz_generada=True, tamano_matriz=tamano_matriz, error=error_message)
         
@@ -195,28 +241,23 @@ def resolver_sor_gauss_seidel():
         for i in range(tamano_matriz):
             b.append(float(request.form[f'b_{i}']))
 
-        # Extraer criterio de detención y parámetros
-        criterio = request.form.get('criterio', 'tolerancia')  # Por defecto "tolerancia"
+        criterio = request.form.get('criterio', 'tolerancia')  
         tol = float(request.form.get('tolerancia', 0.0001)) if criterio == "tolerancia" else None
         max_iter = request.form.get('max_iter', '100')
         if max_iter.strip() == '':
-            max_iter = 100  # Asignar un valor predeterminado si está vacío
+            max_iter = 100 
         else:
             max_iter = int(max_iter)
         decimales = int(request.form.get('decimales', 6))
         w = float(request.form.get('w', 1.0))  # Factor de relajación
 
-        # Resolver usando SOR basado en Gauss-Seidel
         iteraciones, iteracion_final = sor_gauss_seidel(A, b, w, tol, max_iter, criterio, decimales)
 
-        # Mostrar los resultados en la plantilla
         return render_template('sor_gauss_seidel.html', matriz_generada=True, tamano_matriz=tamano_matriz,
                                iteraciones=iteraciones, iteracion_final=iteracion_final)
     except ValueError as e:
-        # Manejar errores de conversión numérica o campos vacíos
         return render_template('sor_gauss_seidel.html', matriz_generada=False, error=f"Error en los datos: {e}")
     except Exception as e:
-        # Manejar cualquier otro error inesperado
         return render_template('sor_gauss_seidel.html', matriz_generada=False, error=f"Error inesperado: {e}")
     
 #CALCULOS bases
@@ -257,16 +298,24 @@ def calcular():
     max_iter = request.form.get('max_iter')
     mostrar_paso_a_paso = 'mostrar_paso_a_paso' in request.form
 
+    # Procesar la función ingresada
+    funcion = procesar_funcion(funcion)
+
     tolerancia = float(tolerancia) if tolerancia else None
     max_iter = int(max_iter) if max_iter else None
 
     try:
         iteraciones, resultado_final = newton_raphson(funcion, x0, tolerancia, max_iter)
-        return render_template('newton.html', resultado=resultado_final, iteraciones=iteraciones if mostrar_paso_a_paso else None,
-                               funcion=funcion, x0=x0, tolerancia=tolerancia, max_iter=max_iter, mostrar_paso_a_paso=mostrar_paso_a_paso)
+        return render_template('newton.html', 
+                               resultado=resultado_final, 
+                               iteraciones=iteraciones if mostrar_paso_a_paso else None,
+                               funcion=funcion, 
+                               x0=x0, 
+                               tolerancia=tolerancia, 
+                               max_iter=max_iter, 
+                               mostrar_paso_a_paso=mostrar_paso_a_paso)
     except ValueError as e:
         return render_template('newton.html', error=str(e), iteraciones=None)
-    
 
 
 # Cambio de base

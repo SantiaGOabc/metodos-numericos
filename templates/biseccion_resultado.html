@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados - Bisección</title>
+</head>
+<body>
+    <h1>Resultados del Método de Bisección</h1>
+    <p><strong>Raíz aproximada:</strong> {{ resultado }}</p>
+    <p><strong>Error final:</strong> {{ error }}</p>
+    <h2>Iteraciones:</h2>
+    <table border="1">
+        <tr>
+            <th>Iteración</th>
+            <th>a</th>
+            <th>b</th>
+            <th>c</th>
+            <th>f(c)</th>
+            <th>Error</th>
+        </tr>
+        {% for iteracion in iteraciones %}
+        <tr>
+            <td>{{ iteracion.iteracion }}</td>
+            <td>{{ iteracion.a }}</td>
+            <td>{{ iteracion.b }}</td>
+            <td>{{ iteracion.c }}</td>
+            <td>{{ iteracion.fc }}</td>
+            <td>{{ iteracion.error }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/biseccion">Realizar otro cálculo</a>
+</body>
+</html>
